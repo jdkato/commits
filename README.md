@@ -60,7 +60,8 @@ the name.
 | `Conform` | conform's commit policy |
 | `Commitizen` | `cz check`'s schema; goes with `Conventional` |
 
-Every rule, its level, and what it reports: [docs/rules.md](docs/rules.md).
+Each rule file in [`Commits/styles`](Commits/styles) opens with what it
+reports and why, carries its level, and links the passage it enforces.
 Levels and toggles work as for any Vale rule, and a limit is a parameter:
 `Commitlint.HeaderLength[max] = 72`.
 
