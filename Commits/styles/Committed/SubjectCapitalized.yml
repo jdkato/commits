@@ -1,0 +1,51 @@
+# `subject_capitalized = true`. With `style = "conventional"` the subject is
+# the description after the prefix, so the second token steps past one and
+# the first applies only when there is none.
+extends: existence
+message: "subject_capitalized: '%s'."
+link: https://github.com/crate-ci/committed/blob/master/docs/reference.md
+level: error
+scope: subject
+nonword: true
+tokens:
+  - '^(?!\w+(?:\([^)]*\))?!?: )[a-z]\S*'
+  - '(?<=^\w+(?:\([^)]*\))?!?: )[a-z]\S*'
+
+tests:
+  - name: "before"
+    about: "committed's defaults, most of them at once"
+    format: COMMIT_EDITMSG
+    view: Commit
+    input: |
+      wip: added the parser, which took a while!
+
+      A body line that is long enough to run past the seventy-two columns allowed.
+    want: |
+      1:6:Committed.SubjectCapitalized:subject_capitalized: 'added'.
+  - name: "long"
+    about: "a subject past fifty columns, a fixup, and a merge"
+    format: COMMIT_EDITMSG
+    view: Commit
+    input: |
+      fixup! Add a subject that runs well past fifty columns in all
+    want: |
+      1:1:Committed.SubjectCapitalized:subject_capitalized: 'fixup!'.
+  - name: "type"
+    about: "the conventional style, on, with its own type list"
+    format: COMMIT_EDITMSG
+    view: Commit
+    input: |
+      ci: add the workflow
+
+      The workflow runs the suite on every push.
+    want: |
+      1:5:Committed.SubjectCapitalized:subject_capitalized: 'add'.
+  - name: "after"
+    about: "the rewrite"
+    format: COMMIT_EDITMSG
+    view: Commit
+    input: |
+      Add the parser
+
+      A body wrapped at seventy-two columns, as the default asks.
+    want: ""

@@ -1,0 +1,33 @@
+# `body.required: true`. conform reads past `Signed-off-by:` lines, and
+# here the trailers are a scope of their own, so the body is the body.
+extends: occurrence
+message: "Commit body is empty."
+link: https://github.com/siderolabs/conform#commit-policy
+level: error
+scope: body
+min: 1
+token: '\S'
+
+tests:
+  - name: "before"
+    about: "the README's sample policy, most checks failing at once"
+    format: COMMIT_EDITMSG
+    view: Commit
+    input: |
+      Added the parser, in a header that runs past the eighty-nine characters that conform allows.
+
+      Signed-off-by: J
+    want: |
+      1:1:Conform.Body:Commit body is empty.
+  - name: "after"
+    about: "the rewrite"
+    format: COMMIT_EDITMSG
+    view: Commit
+    input: |
+      add the parser
+
+      The parser reads the file into a tree that the rest of the tool
+      walks.
+
+      Signed-off-by: Jane Doe <jane@example.com>
+    want: ""

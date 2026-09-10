@@ -1,0 +1,8 @@
+{
+  "feed": "https://github.com/jdkato/commits/releases.atom",
+  "vale_version": ">=3.21.0",
+  "license_files": [
+    "LICENSE",
+    "NOTICE"
+  ]
+}

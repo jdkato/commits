@@ -1,0 +1,25 @@
+# `subject_length = 50`. `Committed.SubjectLength[max]` sets it.
+extends: Commits._shared.SubjectLength
+message: "subject_length: a subject of %d columns."
+link: https://github.com/crate-ci/committed/blob/master/docs/reference.md
+level: error
+max: 50
+
+tests:
+  - name: "long"
+    about: "a subject past fifty columns, a fixup, and a merge"
+    format: COMMIT_EDITMSG
+    view: Commit
+    input: |
+      fixup! Add a subject that runs well past fifty columns in all
+    want: |
+      1:1:Committed.SubjectLength:subject_length: a subject of 61 columns.
+  - name: "after"
+    about: "the rewrite"
+    format: COMMIT_EDITMSG
+    view: Commit
+    input: |
+      Add the parser
+
+      A body wrapped at seventy-two columns, as the default asks.
+    want: ""

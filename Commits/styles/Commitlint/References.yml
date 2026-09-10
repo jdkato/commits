@@ -1,0 +1,33 @@
+# `references-empty` set to `never`: the message refers to an issue, `#123`,
+# anywhere in it. Off by default. The raw message is read so that the
+# reference counts wherever it sits.
+extends: occurrence
+message: "Reference an issue somewhere in the message: '#123'."
+link: https://commitlint.js.org/reference/rules.html#references-empty
+level: error
+scope: raw
+min: 1
+token: '#\d+'
+
+tests:
+  - name: "extras"
+    about: "the rules config-conventional leaves off, most of them firing at once"
+    format: COMMIT_EDITMSG
+    view: Commit
+    input: |
+      fix(web)!: add URL parsing
+
+      Short.
+    want: |
+      1:1:Commitlint.References:Reference an issue somewhere in the message: '#123'.
+  - name: "extras-short"
+    about: "a header under the minimum, no scope, no body, and the breaking footer without a '!'"
+    format: COMMIT_EDITMSG
+    view: Commit
+    input: |
+      fix: x
+
+      BREAKING CHANGE: the flag is gone
+      Signed-off-by: J <j@example.com>
+    want: |
+      1:1:Commitlint.References:Reference an issue somewhere in the message: '#123'.

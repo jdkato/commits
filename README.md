@@ -1,0 +1,120 @@
+# Commits: a Vale style for commit messages
+
+A commit message has a subject, a body, and trailers, and every project has
+rules about each. This package is those rules, for the conventions people
+follow and the linters they run, written as [Vale](https://vale.sh) rules:
+[Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/), the
+[Angular](https://github.com/angular/angular/blob/main/contributing-docs/commit-message-guidelines.md)
+format it came from, [gitmoji](https://gitmoji.dev/specification),
+[Emoji-Log](https://github.com/ahmadawais/Emoji-Log), the [seven
+rules](https://cbea.ms/git-commit/), the Linux
+[kernel's](https://www.kernel.org/doc/html/latest/process/submitting-patches.html)
+patch format, the [Go](https://go.dev/doc/contribute#commit_messages)
+project's, a Jira key, and the rule sets of
+[commitlint](https://commitlint.js.org),
+[gitlint](https://jorisroovers.com/gitlint/),
+[committed](https://github.com/crate-ci/committed),
+[conform](https://github.com/siderolabs/conform), and
+[commitizen](https://commitizen-tools.github.io/commitizen/).
+
+The linter that checks the docs checks the log: in a hook, in CI, or against
+a pull request's description, with spelling along for the ride. Nothing to
+install beside Vale, and no config file of its own.
+
+## Install
+
+> Commits requires Vale v3.21.0 or later, for the View that reads a message.
+
+```ini
+StylesPath = styles
+Packages = Commits
+
+[COMMIT_EDITMSG]
+BasedOnStyles = Commits, Conventional
+```
+
+```console
+$ vale sync
+```
+
+`Commits` is in the [package library](https://vale.sh/explorer), so the name
+is enough. The package brings the section, the View that reads a message
+into its parts, and `Commits`, the core every convention shares. You name
+the convention beside it. To pin a version, give a release URL instead of
+the name.
+
+| Style | Enforces |
+| ----- | -------- |
+| `Commits` | The core, on by default: a blank line after the subject, the imperative mood, no edge whitespace, no `fix` or `wip` for a subject |
+| `Conventional` | The [spec](https://www.conventionalcommits.org/en/v1.0.0/#specification), and only the spec |
+| `Commitlint` | commitlint's rules, with `config-conventional`'s on; goes with `Conventional` |
+| `Angular` | Angular's [guidelines](https://github.com/angular/angular/blob/main/contributing-docs/commit-message-guidelines.md); goes with `Conventional` |
+| `Gitmoji` | One of the 75 gitmojis first, then a message |
+| `EmojiLog` | One of Emoji-Log's seven labels |
+| `SevenRules` | Chris Beams's [seven rules](https://cbea.ms/git-commit/#seven-rules) |
+| `Kernel` | The kernel's [patch format](https://www.kernel.org/doc/html/latest/process/submitting-patches.html#describe-your-changes): subsystem prefix, 75 columns, `Signed-off-by:`, `Fixes:` and `Closes:` |
+| `Go` | Go's [contribution guide](https://go.dev/doc/contribute#commit_messages): package prefix, no capital, `Fixes #123` |
+| `Jira` | An issue key in the subject |
+| `Gitlint` | gitlint's built-in rules at their defaults |
+| `Committed` | committed's defaults |
+| `Conform` | conform's commit policy |
+| `Commitizen` | `cz check`'s schema; goes with `Conventional` |
+
+Every rule, its level, and what it reports: [docs/rules.md](docs/rules.md).
+Levels and toggles work as for any Vale rule, and a limit is a parameter:
+`Commitlint.HeaderLength[max] = 72`.
+
+## Wire it up
+
+```sh
+#!/bin/sh
+# .git/hooks/commit-msg
+exec vale --path=COMMIT_EDITMSG < "$1"
+```
+
+An error-level alert exits non-zero, and the commit stops with the alerts on
+screen. The same line runs in CI on `git log --format=%B`, on each commit of
+a pull request, and on the request's description; husky, lefthook, and
+pre-commit forms are in [docs/wiring.md](docs/wiring.md), and
+[`script/commit-msg`](script/commit-msg) is the hook with Git's own messages
+let through and a `vale sync` on the first commit after a clone. The report can look like commitlint's, gitlint's, committed's,
+conform's, or a GitHub annotation: `--output=commitlint.tmpl`, and the
+rest in [docs/output.md](docs/output.md).
+
+## Coming from another tool
+
+Each guide maps the tool's rules and config to the rules here, gives the
+config to write, and says what is not carried and why.
+
+- [commitlint](docs/commitlint.md), including `config-conventional` and every
+  rule in its reference
+- [gitlint](docs/gitlint.md)
+- [committed](docs/committed.md)
+- [conform](docs/conform.md)
+- [commitizen](docs/commitizen.md)
+- [cocogitto, commitsar, and conventional-pre-commit](docs/conventional-tools.md)
+
+How the tools compare on features and speed, measured:
+[docs/comparison.md](docs/comparison.md). How a rule reaches the subject of
+a file with no markup: [docs/how-it-works.md](docs/how-it-works.md).
+
+## Tests
+
+```console
+$ vale test Commits/styles
+```
+
+Each rule carries its cases in a `tests:` block, run in isolation through
+the View, and each style that mirrors a tool has an `Upstream.test.yml`
+generated by `script/upstream.py` from that tool's own fixtures, so the
+rules here pass and fail the messages the tool's tests do. `./test.sh` runs
+both and adds two checks: a rule with no case that expects an alert fails
+the run, and the message at HEAD is held to the convention the repository
+ships. A case's `view:` key is on Vale's `v3` branch until the next release,
+which CI builds.
+
+## License
+
+MIT. The gitmoji list is generated from the [gitmoji
+project's](https://github.com/carloscuesta/gitmoji), MIT; see
+[NOTICE](NOTICE).

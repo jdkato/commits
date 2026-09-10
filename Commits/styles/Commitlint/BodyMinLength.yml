@@ -1,0 +1,55 @@
+# `body-min-length`: the body has at least `min` characters, and a missing
+# body has none. Off by default; `Commitlint.BodyMinLength[min] = 40` sets
+# the count.
+extends: occurrence
+message: "A body of %d characters, under body-min-length."
+link: https://commitlint.js.org/reference/rules.html#body-min-length
+level: error
+scope: body
+token: '.'
+min: 20
+
+tests:
+  - name: "extras"
+    about: "the rules config-conventional leaves off, most of them firing at once"
+    format: COMMIT_EDITMSG
+    view: Commit
+    input: |
+      fix(web)!: add URL parsing
+
+      Short.
+    want: |
+      3:1:Commitlint.BodyMinLength:A body of 6 characters, under body-min-length.
+  - name: "extras-short"
+    about: "a header under the minimum, no scope, no body, and the breaking footer without a '!'"
+    format: COMMIT_EDITMSG
+    view: Commit
+    input: |
+      fix: x
+
+      BREAKING CHANGE: the flag is gone
+      Signed-off-by: J <j@example.com>
+    want: |
+      1:1:Commitlint.BodyMinLength:A body of 0 characters, under body-min-length.
+  - name: "after"
+    about: "the rewrite"
+    format: COMMIT_EDITMSG
+    view: Commit
+    input: |
+      chore(deps): bump lodash to the latest release
+
+      The body wraps at one hundred characters, and a line that holds a URL is exempt:
+      https://github.com/conventional-changelog/commitlint/tree/master/%40commitlint/config-conventional#body-max-line-length
+
+      BREAKING CHANGE: the lockfile format changed.
+    want: ""
+  - name: "guards"
+    about: "an acronym and a name are not capitalized words"
+    format: COMMIT_EDITMSG
+    view: Commit
+    input: |
+      fix: URL parsing keeps the fragment
+
+      Two words in capitals do not make an upper-case subject, and a name
+      such as HttpClient is not a capitalized word.
+    want: ""

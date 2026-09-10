@@ -1,0 +1,7 @@
+fix(parser): handle an empty scope in the header
+
+An empty scope produced a header that the changelog generator rejected,
+so the parser now reports it before the generator runs.
+
+Fixes #123
+Signed-off-by: Jane Doe <jane@example.com>
