@@ -31,7 +31,7 @@ and the hook, from `committed --commit-file "$1"` to
 | --------- | ---- |
 | `subject_length` | `Committed.SubjectLength`, `[max]` |
 | `line_length` | `Committed.LineLength` |
-| `hard_line_length` | Not carried: off by default there, and a URL line is what it exists to allow, which the wrap rule already exempts |
+| `hard_line_length` | `Committed.HardLineLength`, off as it is there; a URL line counts, where `line_length` exempts it |
 | `subject_capitalized` | `Committed.SubjectCapitalized` |
 | `subject_not_punctuated` | `Committed.SubjectNotPunctuated` |
 | `imperative_subject` | `Commits.Imperative` |

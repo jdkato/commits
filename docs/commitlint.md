@@ -59,17 +59,19 @@ bracket key where the rule takes one:
 | `scope-enum` | `Commitlint.Scope` | Extend it with your list, as with a type; the shipped list is a placeholder |
 | `scope-empty: never` | `Commitlint.ScopeRequired` | |
 | `scope-case: lower-case` | `Commitlint.ScopeCase` | Another case: extend with `raw` rewritten |
-| `scope-max-length`, `scope-min-length`, `scope-delimiter-style` | not carried | Rarely set; a `raw` on `subject` with a lookbehind for the `(` is a one-line rule |
+| `scope-max-length`, `scope-min-length` | `Commitlint.ScopeLength` | `[max]`, `[min]` |
+| `scope-delimiter-style` | `Commitlint.ScopeDelimiter` | A scope that mixes `/` and `,` |
 | `header-case: lower-case` | `Commitlint.HeaderCase` | |
 | `header-full-stop` | `Commitlint.FullStop` | The same check in practice |
 | `header-min-length` | `Commitlint.HeaderMinLength` | `[min]` |
 | `subject-max-length`, `subject-min-length` | `Commitlint.SubjectLength` | `[max]`, `[min]` |
 | `subject-exclamation-mark: never` | `Commitlint.Exclamation` | |
-| `type-max-length`, `type-min-length` | not carried | A type is a word from a list; the list bounds it |
+| `type-max-length`, `type-min-length` | `Commitlint.TypeLength` | `[max]`, `[min]`; a type list bounds it already |
 | `body-empty: never` | `Commitlint.Body` | |
 | `body-min-length` | `Commitlint.BodyMinLength` | `[min]` |
 | `body-max-length` | `Commitlint.BodyMaxLength` | `[max]` |
-| `body-case`, `body-full-stop` | not carried | A body is prose; case and a closing period are what prose has |
+| `body-case: lower-case` | `Commitlint.BodyCase` | Another case: extend with `raw` rewritten |
+| `body-full-stop: never` | `Commitlint.BodyFullStop` | |
 | `footer-empty: never` | `Commitlint.FooterRequired` | |
 | `footer-max-length` | `Commitlint.FooterMaxLength` | `[max]` |
 | `references-empty: never` | `Commitlint.References` | |

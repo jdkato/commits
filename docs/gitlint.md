@@ -37,7 +37,7 @@ and the hook, from `gitlint --msg-filename "$1"` to
 | T3 `title-trailing-punctuation` | `Gitlint.TitleTrailingPunctuation` |
 | T4 `title-hard-tab`, B3 `body-hard-tab` | `Gitlint.HardTab` |
 | T5 `title-must-not-contain-word` | `Gitlint.TitleMustNotContainWord`; extend `tokens` for more words |
-| T7 `title-match-regex` | An `existence` rule on `subject` with your regex in a negative lookahead |
+| T7 `title-match-regex` | `Gitlint.TitleMatchRegex`, off; extend it with your regex in the lookahead |
 | T8 `title-min-length` | `Gitlint.TitleMinLength`, `[min]` |
 | B1 `body-max-line-length` | `Gitlint.BodyMaxLineLength` |
 | B2 `body-trailing-whitespace` | `Gitlint.BodyTrailingWhitespace` |
@@ -45,7 +45,7 @@ and the hook, from `gitlint --msg-filename "$1"` to
 | B5 `body-min-length` | `Gitlint.BodyMinLength`, `[min]` |
 | B6 `body-is-missing` | `Gitlint.BodyIsMissing`; the hook skips merges as gitlint does |
 | B7 `body-changed-file-mention` | Not carried: it needs the diff, and a rule sees the message |
-| B8 `body-match-regex` | An `existence` rule on `body` |
+| B8 `body-match-regex` | `Gitlint.BodyMatchRegex`, off; extend it with your regex as the `token` |
 | M1 `author-valid-email` | Not carried: the author is commit metadata, not the message |
 | I1 to I4, the ignore rules | The hook's skip list, or `--glob` for a run over files |
 | CT1 `contrib-title-conventional-commits` | `Conventional`, with `Commitlint.Type` for the list |

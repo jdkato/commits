@@ -1,0 +1,67 @@
+# `hard_line_length`: "Max number of columns any line can occupy", with no
+# exemption for a line that holds a URL, which `line_length` allows. Off by
+# default, as committed's default of 0 is; the shared script is
+# Commits/_shared/Wrap.yml with its margin at 100 and the URL check removed.
+extends: Commits._shared.Wrap
+message: "hard_line_length: this line runs past 100 from '%s'."
+link: https://github.com/crate-ci/committed/blob/master/docs/reference.md
+level: error
+script: |
+  max := 100
+  text := import("text")
+  matches := []
+  pos := 0
+  seen_subject := false
+  para_start := true
+  in_trailers := false
+  for line in text.split(scope, "\n") {
+    next := pos + len(line) + 1
+    if text.re_match(`^#\s*-+\s*>8\s*-+\s*$`, line) {
+      break
+    }
+    if text.has_prefix(line, "#") {
+      pos = next
+      continue
+    }
+    if text.trim_space(line) == "" {
+      para_start = true
+      in_trailers = false
+      pos = next
+      continue
+    }
+    if !seen_subject {
+      seen_subject = true
+      pos = next
+      continue
+    }
+    if para_start && text.re_match(`^(?i:breaking[ -]change|[\w-]+)(?:: | #)`, line) {
+      in_trailers = true
+    }
+    para_start = false
+    if !in_trailers {
+      over := text.re_find(`^.{` + string(max) + `}`, line)
+      if over != undefined && over[0][0].end < len(line) {
+        matches = append(matches, {begin: pos + over[0][0].end, end: pos + len(line)})
+      }
+    }
+    pos = next
+  }
+
+tests:
+  - name: "url line counted"
+    format: COMMIT_EDITMSG
+    view: Commit
+    input: |
+      Add a thing
+
+      See https://example.com/a/very/long/path/that/runs/on/and/on/and/on/past/one/hundred/columns/in/all for it.
+    want: |
+      3:101:Committed.HardLineLength:hard_line_length: this line runs past 100 from 'for it.'.
+  - name: "clean"
+    format: COMMIT_EDITMSG
+    view: Commit
+    input: |
+      Add a thing
+
+      A short body.
+    want: ""
