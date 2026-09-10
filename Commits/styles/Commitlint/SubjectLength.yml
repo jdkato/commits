@@ -1,7 +1,9 @@
 # `subject-max-length` and `subject-min-length`: the description after the
 # prefix, as against the header. Off by default; both counts are
-# parameters, `Commitlint.SubjectLength[max] = 50` and `[min] = 10`. The
-# prefix is left out of the count by a lookbehind on each character.
+# parameters, `Commitlint.SubjectLength[max] = 50` and `[min] = 10`, and
+# `min` is unset until asked for, as commitlint skips a part that is not
+# there. The prefix is left out of the count by a lookbehind on each
+# character.
 extends: occurrence
 message: "A subject of %d characters, outside subject-min-length and subject-max-length."
 link: https://commitlint.js.org/reference/rules.html#subject-max-length
@@ -9,7 +11,7 @@ level: error
 scope: subject
 token: '(?<=^\w+(?:\([^)]*\))?!?: .*).'
 max: 72
-min: 1
+min: 0
 
 tests:
   - name: "extras-lengths"

@@ -23,6 +23,20 @@ other when** you need what only Git knows, a signature or an author, or the
 interactive prompt and release tooling of commitizen or cocogitto; both run
 beside Vale without conflict.
 
+## Verdicts
+
+Every tool that installs locally also runs in
+[`script/differential/run.py`](../script/differential/run.py): one corpus of
+messages, each tool with the config its guide gives, Vale with the matching
+style, and a diff of the verdicts rule by rule. Over 105 messages and every
+rule the tools share, the disagreements are all of one kind, a parser
+reading the message differently, and each guide's differences section names
+them: commitlint and cz check ignore merges and fixups, which the hook skips
+instead; commitlint and conform derive a second error from a header they
+cannot parse; gitlint has no trailers; committed stops at a WIP subject. The
+rules that could be made to read as the tools read were, so the same
+message gets the same answer.
+
 ## Speed
 
 One message, from a file, the way a hook runs, on an Apple Silicon Mac.

@@ -1,19 +1,26 @@
-# B1 `body-max-line-length`, `line-length=80`. The script is the shared one,
-# Commits/_shared/Wrap.yml, with its margin at 80; a script is one value, so
-# a different margin means the whole of it.
-extends: Commits._shared.Wrap
+# B1 `body-max-line-length`, `line-length=80`: every line after the title,
+# trailers included, and no exemption for a URL, since gitlint has none.
+# The alert starts where the margin ends. The margin is the script's first
+# line.
+extends: script
 message: "B1 body-max-line-length: this line runs past 80 from '%s'."
 link: https://jorisroovers.com/gitlint/latest/rules/builtin_rules/#b1-body-max-line-length
 level: error
+scope: raw
 script: |
   max := 80
+  t_end := 0
+  t_line := ""
   text := import("text")
   matches := []
   pos := 0
-  seen_subject := false
-  para_start := true
-  in_trailers := false
-  for line in text.split(scope, "\n") {
+  title := -1
+  body := []
+  lines := text.split(scope, "\n")
+  if len(lines) > 0 && lines[len(lines)-1] == "" {
+    lines = lines[:len(lines)-1]
+  }
+  for line in lines {
     next := pos + len(line) + 1
     if text.re_match(`^#\s*-+\s*>8\s*-+\s*$`, line) {
       break
@@ -22,28 +29,26 @@ script: |
       pos = next
       continue
     }
-    if text.trim_space(line) == "" {
-      para_start = true
-      in_trailers = false
-      pos = next
-      continue
-    }
-    if !seen_subject {
-      seen_subject = true
-      pos = next
-      continue
-    }
-    if para_start && text.re_match(`^(?i:breaking[ -]change|[\w-]+)(?:: | #)`, line) {
-      in_trailers = true
-    }
-    para_start = false
-    if !in_trailers && !text.re_match(`https?://`, line) {
-      over := text.re_find(`^.{` + string(max) + `}`, line)
-      if over != undefined && over[0][0].end < len(line) {
-        matches = append(matches, {begin: pos + over[0][0].end, end: pos + len(line)})
+    if title < 0 {
+      if text.trim_space(line) != "" {
+        title = pos
+        title_end := pos + len(line)
+        title_line := line
+        body = []
+        t_end = title_end
+        t_line = title_line
       }
+      pos = next
+      continue
     }
+    body = append(body, {line: line, pos: pos})
     pos = next
+  }
+  for b in body {
+    over := text.re_find(`^.{` + string(max) + `}`, b.line)
+    if over != undefined && over[0][0].end < len(b.line) {
+      matches = append(matches, {begin: b.pos + over[0][0].end, end: b.pos + len(b.line)})
+    }
   }
 
 tests:

@@ -1,5 +1,6 @@
-# `subject_not_punctuated = true`: "Prevent the subject from ending in
-# punctuation".
+# `subject_not_punctuated = true`: the subject's last character is not a
+# space, a period, `!`, or `?`, which is committed's set, read before any
+# trimming, so a trailing space counts.
 extends: existence
 message: "subject_not_punctuated: '%s'."
 link: https://github.com/crate-ci/committed/blob/master/docs/reference.md
@@ -7,7 +8,7 @@ level: error
 scope: subject
 nonword: true
 raw:
-  - '\p{P}$'
+  - '[ .!?]$'
 
 tests:
   - name: "before"

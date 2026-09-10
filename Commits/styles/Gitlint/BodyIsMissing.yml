@@ -1,11 +1,53 @@
-# B6 `body-is-missing`. gitlint skips merge commits; the hook does the same.
-extends: occurrence
+# B6 `body-is-missing`. gitlint's body is every line after the title,
+# trailers included, and "missing" is fewer than two of them: the blank
+# line and at least one more. A merge, fixup, squash, or amend commit is
+# skipped, as gitlint skips each by default. Read from the raw message, past Git's own lines, so that
+# the count is gitlint's.
+extends: script
 message: "B6 body-is-missing."
 link: https://jorisroovers.com/gitlint/latest/rules/builtin_rules/#b6-body-is-missing
 level: error
-scope: body
-min: 1
-token: '\S'
+scope: raw
+script: |
+  t_end := 0
+  t_line := ""
+  text := import("text")
+  matches := []
+  pos := 0
+  title := -1
+  body := []
+  lines := text.split(scope, "\n")
+  if len(lines) > 0 && lines[len(lines)-1] == "" {
+    lines = lines[:len(lines)-1]
+  }
+  for line in lines {
+    next := pos + len(line) + 1
+    if text.re_match(`^#\s*-+\s*>8\s*-+\s*$`, line) {
+      break
+    }
+    if text.has_prefix(line, "#") {
+      pos = next
+      continue
+    }
+    if title < 0 {
+      if text.trim_space(line) != "" {
+        title = pos
+        title_end := pos + len(line)
+        title_line := line
+        body = []
+        t_end = title_end
+        t_line = title_line
+      }
+      pos = next
+      continue
+    }
+    body = append(body, {line: line, pos: pos})
+    pos = next
+  }
+  skipped := text.has_prefix(t_line, "Merge") || text.re_match(`^(?:fixup|squash|amend)! `, t_line)
+  if title >= 0 && len(body) < 2 && !skipped {
+    matches = append(matches, {begin: title, end: t_end})
+  }
 
 tests:
   - name: "short"

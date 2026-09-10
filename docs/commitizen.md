@@ -39,6 +39,12 @@ and `vale --path=COMMIT_EDITMSG < "$1"` in the hook.
 
 ## Differences
 
+`script/differential/run.py` runs `cz check` and Vale over one corpus and
+finds the two in agreement on every message but the ones `cz check` skips,
+its `allowed_prefixes`, which the hook skips too, and a message with leading
+whitespace, which `cz check` strips and `Commits.Whitespace` reports. The
+type list is case-sensitive, as the schema pattern is.
+
 `cz check` is one regex against the header. Everything a body or footer
 can get wrong is invisible to it and reported here: the blank line, the
 wrap, the footer tokens, the `BREAKING CHANGE` case. A message that passes

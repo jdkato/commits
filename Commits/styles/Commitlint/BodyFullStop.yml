@@ -1,5 +1,6 @@
 # `body-full-stop` set to `never`: the body does not end with a period. Off
-# by default, since a body is prose and ends as prose does.
+# by default, since a body is prose and ends as prose does. Whitespace after
+# the period counts as commitlint counts it: the body then ends in a space.
 extends: existence
 message: "body-full-stop: the body does not end with a period."
 link: https://commitlint.js.org/reference/rules.html#body-full-stop
@@ -7,7 +8,7 @@ level: error
 scope: body
 nonword: true
 raw:
-  - '\.\s*\z'
+  - '\.\z'
 tests:
   - name: "period"
     format: COMMIT_EDITMSG

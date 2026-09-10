@@ -1,4 +1,5 @@
-# `scope-empty` set to `never`: every commit names a scope. Off by default.
+# `scope-empty` set to `never`: every commit names a scope, and `()` names
+# none. Off by default.
 extends: existence
 message: "A scope is required: '%s(scope):'."
 link: https://commitlint.js.org/reference/rules.html#scope-empty
@@ -6,7 +7,7 @@ level: error
 scope: subject
 nonword: true
 raw:
-  - '^\w+(?=!?:)'
+  - '^\w+(?:\(\s*\))?(?=!?:)'
 
 tests:
   - name: "extras-short"

@@ -4,7 +4,7 @@
 #
 #   extends: Commitlint.Scope
 #   raw:
-#     - '(?<=^\w+\()(?!(?:api|cli|docs)\))[^()]*(?=\))'
+#     - '(?<=^\w+\()(?!(?:api|cli|docs)\))[^()]+(?=\))'
 extends: existence
 message: "'%s' is not one of the scopes: api, cli, docs."
 link: https://commitlint.js.org/reference/rules.html#scope-enum
@@ -12,7 +12,7 @@ level: error
 scope: subject
 nonword: true
 raw:
-  - '(?<=^\w+\()(?!(?:api|cli|docs)\))[^()]*(?=\))'
+  - '(?<=^\w+\()(?!(?:api|cli|docs)\))[^()]+(?=\))'
 
 tests:
   - name: "extras"

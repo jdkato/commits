@@ -1,13 +1,14 @@
 # `cz check` matches the message against `cz_conventional_commits`'s
 # schema pattern, whose types are build, bump, chore, ci, docs, feat, fix,
-# perf, refactor, revert, style, test. The rest of the pattern is the spec:
-# `Conventional` covers it, and `Commits.Blank` the blank line it requires.
+# perf, refactor, revert, style, test, in lower case, since the pattern is
+# case-sensitive. The rest of it is the spec: `Conventional` covers it, and
+# `Commits.Blank` the blank line it requires.
 extends: Commitlint.Type
 message: "'%s' is not a commitizen type: build, bump, chore, ci, docs, feat, fix, perf, refactor, revert, style, test."
 link: https://commitizen-tools.github.io/commitizen/commands/check/
 level: error
 raw:
-  - '^(?!(?i:build|bump|chore|ci|docs|feat|fix|perf|refactor|revert|style|test)(?:[(!:]))\w+(?=(?:\([^()]*\))?!?:)'
+  - '^(?!(?:build|bump|chore|ci|docs|feat|fix|perf|refactor|revert|style|test)(?:[(!:]))\w+(?=(?:\([^()]*\))?!?:)'
 
 tests:
   - name: "before"

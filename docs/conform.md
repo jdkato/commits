@@ -62,6 +62,15 @@ with a style of your own for the type list, as in
 
 ## Differences
 
+`script/differential/run.py` runs conform and Vale over one corpus. They
+agree on every comparison but one kind: a header conform cannot parse, with
+its own regex, is reported there under both Imperative Mood and Header Case,
+and here once, by the rule that names what is missing. The rules read as
+conform reads: `header.case` is the first character of the description when
+a conventional block is configured, and a digit fails it; `body.required`
+takes any line after the header that is not a `Signed-off-by:` line as body,
+trailers included; and `dco` looks at every line of the message.
+
 conform tags the first word with a part-of-speech tagger and rejects a past
 tense, a gerund, or a third-person form. `Commits.Imperative` looks for the
 same forms of the common verbs by their endings, and for `This commit` and

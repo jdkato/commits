@@ -53,6 +53,13 @@ and the hook, from `gitlint --msg-filename "$1"` to
 | CC2 `contrib-disallow-cleanup-commits` | `Gitlint.DisallowCleanupCommits`, off; turn on for a run over history |
 | CC3 `contrib-allowed-authors` | Not carried: metadata |
 
+gitlint has no notion of trailers: its body is every line after the title,
+`B1` measures a `Signed-off-by:` line like any other and exempts no URL, `B5`
+counts them all, and `B6` means fewer than two lines after the title, the
+blank one included. The `Gitlint` body rules read the message that way, and
+`script/differential/run.py`, which runs gitlint and Vale over one corpus,
+finds no disagreement between them on any of gitlint's rules.
+
 A user-defined rule in Python is a YAML rule here, and most of them are an
 `existence` with one pattern. What gitlint cannot do, and this can, is read
 the body as Markdown and run a spelling or house-style rule on it.

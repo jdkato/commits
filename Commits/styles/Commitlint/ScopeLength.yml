@@ -1,6 +1,8 @@
 # `scope-max-length` and `scope-min-length`: the scope's characters, counted
 # by an occurrence of one character at a time inside the parentheses. Off by
-# default; `Commitlint.ScopeLength[max] = 20` and `[min] = 2` set the counts.
+# default; `Commitlint.ScopeLength[max] = 20` and `[min] = 2` set the counts,
+# and `min` is unset until asked for: a commit with no scope has none to
+# count, and commitlint skips it.
 extends: occurrence
 message: "A scope of %d characters, outside scope-min-length and scope-max-length."
 link: https://commitlint.js.org/reference/rules.html#scope-max-length
@@ -8,7 +10,7 @@ level: error
 scope: subject
 token: '(?<=^\w+\([^()]*)[^()]'
 max: 72
-min: 1
+min: 0
 tests:
   - name: "long"
     format: COMMIT_EDITMSG
