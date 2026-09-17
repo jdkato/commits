@@ -13,7 +13,12 @@ jobs:
       # The archive is what users install, so the license and the attribution
       # for the gitmoji list travel inside it.
       - run: cp LICENSE NOTICE Commits/
-      - run: zip -r Commits.zip Commits -x "*.DS_Store" "*.test.yml"
+
+      # GitHub serves the asset for `commits.zip` too, and Vale looks for a
+      # directory named after the URL, so the archive carries both spellings.
+      # The copy needs the runner's case-sensitive filesystem.
+      - run: cp -r Commits commits
+      - run: zip -r Commits.zip Commits commits -x "*.DS_Store" "*.test.yml"
 
       - name: Upload style to release
         uses: svenstaro/upload-release-action@v2
